@@ -13,6 +13,10 @@ module.exports = {
 			fontFamily: {
 				montserrat: ['var(--font-montserrat)'],
 			},
+			colors: {
+				dark: '#3730A3',
+				light: '#C7D2FE',
+			}
 		},
 	},
 	plugins: [],

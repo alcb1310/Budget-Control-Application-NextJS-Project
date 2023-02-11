@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
-import prisma from '../../prisma/client';
-import { company } from '@prisma/client';
+import prisma from '../../../prisma/client';
+import { CompanyInterface } from '@/types';
 
 type Data = {
     name: string;
@@ -9,7 +9,7 @@ type Data = {
 
 export default async function handler(
     req: NextApiRequest,
-    res: NextApiResponse<company[] | Error>
+    res: NextApiResponse<CompanyInterface[] | Error>
 ) {
     if (req.method === 'GET') {
         try {
