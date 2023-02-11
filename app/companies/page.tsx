@@ -1,7 +1,7 @@
 import { CompanyInterface } from '@/types';
 
 async function getCompanies(): Promise<CompanyInterface[]> {
-	const res = await fetch(`${process.env.SERVER}/api/companies/getCompanies`);
+	const res = await fetch(`${process.env.SERVER}/api/companies/get`);
 
 	if (!res.ok) console.log(res);
 
