@@ -1,0 +1,12 @@
+{
+	"menu": {
+		"transactions": {
+			"en": "transactions",
+			"es": "transacciones"
+		},
+		"about": {
+			"en": "about",
+			"es": "acerca de"
+		}
+	}
+}

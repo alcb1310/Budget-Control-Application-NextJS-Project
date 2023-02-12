@@ -1,12 +1,5 @@
 import { CompanyInterface } from '@/types';
-
-async function getCompanies(): Promise<CompanyInterface[]> {
-	const res = await fetch(`${process.env.SERVER}/api/companies/get`);
-
-	if (!res.ok) console.log(res);
-
-	return res.json();
-}
+import { getCompanies } from '../helpers/getCompanies';
 
 export default async function Company() {
 	const data: CompanyInterface[] = await getCompanies();
