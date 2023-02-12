@@ -1,6 +1,7 @@
 import './globals.css';
 
 import { Montserrat } from '@next/font/google';
+import { Navigation, Footer } from './components';
 
 const montserrat = Montserrat({
 	weight: ['400', '700'],
@@ -22,19 +23,9 @@ export default function RootLayout({
 			<head />
 			<body className='font-montserrat'>
 				{/* <body className={`${montserrat.className}`}> */}
-				<nav className='my-12 mx-36 flex px-5'>
-					<h1>logo</h1>
-					<ul className='flex px-5'>
-						<li className='px-5'>
-							<a href='/'>Home</a>
-						</li>
-						<li className='px-5'>
-							<a href='/about'>About</a>
-						</li>
-					</ul>
-				</nav>
+				<Navigation />
 				{children}
-				<footer>made with ❤️ by your friends in alcb1310 systems</footer>
+				{Footer()}
 			</body>
 		</html>
 	);
