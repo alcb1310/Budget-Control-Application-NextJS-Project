@@ -16,6 +16,8 @@ module.exports = {
 			colors: {
 				dark: '#3730A3',
 				light: '#C7D2FE',
+				labels: '#374151',
+				hover: '#312E81',
 			}
 		},
 	},
