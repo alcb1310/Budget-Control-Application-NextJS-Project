@@ -1,7 +1,11 @@
+"use client"
+
 import './globals.css';
 
 import { Montserrat } from '@next/font/google';
 import { Navigation, Footer } from './components';
+import { SessionProvider } from 'next-auth/react';
+import { ReactNode } from 'react';
 
 const montserrat = Montserrat({
 	weight: ['400', '700'],
@@ -9,11 +13,15 @@ const montserrat = Montserrat({
 	variable: '--font-montserrat',
 });
 
+interface IProps {
+	children: ReactNode;
+	session: any
+}
+
 export default function RootLayout({
 	children,
-}: {
-	children: React.ReactNode;
-}) {
+	session,
+}: IProps) {
 	return (
 		<html lang='en'>
 			{/*
@@ -22,10 +30,11 @@ export default function RootLayout({
       */}
 			<head />
 			<body className='font-montserrat'>
-				{/* <body className={`${montserrat.className}`}> */}
-				<Navigation />
-				{children}
-				{Footer()}
+				<SessionProvider session={session}>
+					<Navigation />
+					{children}
+					<Footer />
+				</SessionProvider>
 			</body>
 		</html>
 	);

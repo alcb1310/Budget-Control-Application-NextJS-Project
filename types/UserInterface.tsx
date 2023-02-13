@@ -4,5 +4,5 @@ export interface UserInterface {
 	uuid: string;
 	name: string;
 	email: string;
-	company: CompanyInterface | null;
+	company: CompanyInterface | null | string;
 }

@@ -1,12 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { ErrorInterface } from '@/types';
+import { ErrorInterface, UserInterface } from '@/types';
 import getUserByEmail from '@/pages/helpers/users/getUserByEmail';
 import { validatePassword } from '@/pages/helpers/validatePassword';
-import { user } from '@prisma/client';
 
 type Data = {
-    user: user;
+    user: UserInterface;
 };
 
 type LoginInfo = {
@@ -21,6 +20,7 @@ export default async function handler(
     const { method, body } = req;
 
     if (method === 'POST') {
+
         const { email, password } = body;
 
 
@@ -34,7 +34,14 @@ export default async function handler(
 
         if (isValid === false) return res.status(401).json({ errorKey: 'email', errorDescription: 'invalid credentials', errorStatus: 401 });
 
-        return res.status(200).json({ user });
+        return res.status(200).json({
+            user: {
+                uuid: user.uuid,
+                email: user.email,
+                name: user.name,
+                company: user.companyUuid
+            }
+        });
     }
 
     res.status(500).json({ errorKey: 'unknown', errorDescription: 'Unknown error', errorStatus: 500 });

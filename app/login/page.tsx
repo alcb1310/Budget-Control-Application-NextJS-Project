@@ -3,28 +3,16 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { signIn } from 'next-auth/react';
 
-// export async function getServerSideProps(context: GetServerSidePropsContext) {
-// 	const csrfToken = await getCsrfToken(context);
-// 	return {
-// 		props: { csrfToken },
-// 	};
-// }
-
 export default function Login() {
-	// export default function Login({
-	// 	csrfToken,
-	// }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const [password, setPassword] = useState<string>('');
 	const [email, setEmail] = useState<string>('');
 
-	async function handleSubmit(
-		event: FormEvent<HTMLFormElement>
-	): Promise<void | null> {
-		event.preventDefault();
+	async function handleSubmit(): Promise<void | null> {
 		const userSignIn = await signIn('credentials', {
-			email,
+			username: email,
 			password,
-			callbackUrl: `${window.location.origin}/users`,
+			redirect: true,
+			callbackUrl: `/`,
 		});
 	}
 
@@ -32,8 +20,6 @@ export default function Login() {
 		<form
 			onSubmit={handleSubmit}
 			className='bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4'
-			// method='post'
-			// action='/api/auth/signin/credentials'
 		>
 			<div className='mb-4'>
 				<label

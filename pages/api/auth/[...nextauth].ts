@@ -1,67 +1,42 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { JWT } from 'next-auth/jwt';
-import NextAuth, { Awaitable, RequestInternal, Session, User } from "next-auth";
-import { randomBytes, randomUUID } from "crypto";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-// export default NextAuth({
-//     callbacks: {
-//         session(params: { session: Session, token: JWT, user: User; }) {
-//             return params.session; // The return type will match the one returned in `useSession()`
-//         },
-//     },
-//     providers: []
-// });
+export const authOptions: NextAuthOptions = {
+    providers: [
+        CredentialsProvider({
+            name: 'Credentials',
+            credentials: {
+                username: { label: "Email", type: "email", placeholder: "user@mail.com" },
+                password: { label: "Password", type: "password" }
+            },
+            async authorize(credentials, req) {
+                const { username, password } = credentials as any;
 
-export default async function auth(req: NextApiRequest, res: NextApiResponse) {
-    // Do whatever you want here, before the request is passed down to `NextAuth`
-    return await NextAuth(req, res, {
-        providers: [
-            CredentialsProvider({
-                name: "Credentials",
-                credentials: {
-                    email: { label: 'Email', type: 'text', placeholder: 'email' },
-                    password: { label: 'Password', type: 'password' },
-                },
-                authorize: async function (credentials: Record<"email" | "password", string> | undefined, req: Pick<RequestInternal, "body" | "query" | "headers" | "method">): Promise<User | null> {
-                    const baseUrl = process.env.NEXTAUTH_URL;
+                const res = await fetch(`${process.env.NEXTAUTH_URL}/api/login/post`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        email: username,
+                        password
+                    }),
+                    headers: { "Content-Type": "application/json" }
+                });
+                const user = await res.json();
 
-                    const response = await fetch(
-                        `${baseUrl}/api/login/post`,
-                        {
-                            method: 'POST',
-                            body: JSON.stringify(credentials),
-                            headers: {
-                                "Content-Type": "application/json"
-                            }
-                        }
-                    );
-
-                    if (!response.ok) return null;
-
-                    const data: User = await response.json();
-                    return data;
+                // If no error and we have user data, return it
+                if (res.ok && user) {
+                    return user.user;
                 }
-            })
-        ],
-        secret: process.env.SECRET as string,
-        session: {
-            strategy: 'jwt',
-            // Seconds - How long until an idle session expires and is no longer valid.
-            maxAge: 24 * 60 * 60, // 1 day
-            updateAge: 5 * 60 * 60, // 5 hours
-            generateSessionToken: () => {
-                return randomUUID?.() ?? randomBytes(32).toString("hex");
-            },
-        },
-        pages: {
-            signIn: '/login',
-        },
-        callbacks: {
-            session(params: { session: Session, token: JWT, user: User; }) {
-                params.session.user = params.token;
-                return params.session; // The return type will match the one returned in `useSession()`
-            },
-        },
-    });
-}
+                // Return null if user data could not be retrieved
+                return null;
+            }
+        }),
+    ],
+    session: {
+        strategy: "jwt"
+    },
+    pages: {
+        signIn: `${process.env.NEXTAUTH_URL}/login`
+    }
+};
+
+export default NextAuth(authOptions);
