@@ -1,33 +1,39 @@
 'use client';
 
 import { ChangeEvent, FormEvent, useState } from 'react';
+import { signIn } from 'next-auth/react';
+
+// export async function getServerSideProps(context: GetServerSidePropsContext) {
+// 	const csrfToken = await getCsrfToken(context);
+// 	return {
+// 		props: { csrfToken },
+// 	};
+// }
 
 export default function Login() {
+	// export default function Login({
+	// 	csrfToken,
+	// }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const [password, setPassword] = useState<string>('');
 	const [email, setEmail] = useState<string>('');
 
-	async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+	async function handleSubmit(
+		event: FormEvent<HTMLFormElement>
+	): Promise<void | null> {
 		event.preventDefault();
-
-		const bodyElement = {
+		const userSignIn = await signIn('credentials', {
 			email,
 			password,
-		};
-
-		const res = await fetch(`/api/login/post`, {
-			method: 'POST',
-			body: JSON.stringify(bodyElement),
+			callbackUrl: `${window.location.origin}/users`,
 		});
-
-		if (!res.ok) console.error(res);
-
-		const data = await res.json();
 	}
 
 	return (
 		<form
 			onSubmit={handleSubmit}
 			className='bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4'
+			// method='post'
+			// action='/api/auth/signin/credentials'
 		>
 			<div className='mb-4'>
 				<label
@@ -64,21 +70,20 @@ export default function Login() {
 						setPassword(event.target.value)
 					}
 				/>
-				<p className='text-red-500 text-xs italic'>Please choose a password.</p>
 			</div>
 			<div className='flex items-center justify-between'>
 				<button
-					className='bg-dark hover:bg-hover text-light font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
+					className='bg-dark hover:bg-hover text-light font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline'
 					type='submit'
 				>
 					Sign In
 				</button>
-				<a
+				{/* <a
 					className='inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800'
 					href='#'
 				>
 					Forgot Password?
-				</a>
+				</a> */}
 			</div>
 		</form>
 	);

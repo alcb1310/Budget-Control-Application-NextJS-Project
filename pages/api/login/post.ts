@@ -21,7 +21,7 @@ export default async function handler(
     const { method, body } = req;
 
     if (method === 'POST') {
-        const { email, password } = JSON.parse(body);
+        const { email, password } = body;
 
 
         if (email === undefined) return res.status(400).json({ errorKey: 'email', errorDescription: 'email is required', errorStatus: 400 });
