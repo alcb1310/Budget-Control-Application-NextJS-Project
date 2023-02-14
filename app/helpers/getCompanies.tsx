@@ -1,13 +1,36 @@
-import { CompanyInterface } from '@/types';
+import { CompanyInterface, ErrorInterface } from '@/types';
 import prisma from '@/prisma/client';
+import getUserByEmail from '@/pages/helpers/users/getUserByEmail';
+import { ModuleInterface } from '@/types';
 
-export async function getCompanies(): Promise<CompanyInterface[]> {
-	// const res = await fetch(`${process.env.SERVER}/api/companies/get`);
+const companyModule: ModuleInterface = {
+	name: 'company',
+	method: 'get',
+};
 
-	// if (!res.ok) console.error(res);
+export async function getCompanies(
+	email: string | null | undefined
+): Promise<CompanyInterface[] | ErrorInterface> {
+	if (email === null || email === undefined)
+		return {
+			errorStatus: 500,
+			errorKey: 'Unknown',
+			errorDescription: `Unknown error`,
+		};
 
-	// return res.json();
+	const user = await getUserByEmail(email, companyModule);
 
-	const res = await prisma.company.findMany()
-	return res
+	if (user === null)
+		return {
+			errorStatus: 403,
+			errorKey: 'Unauthorized',
+			errorDescription: `You don't have the authorization to view this resource`,
+		};
+
+	const res = await prisma.company.findMany({
+		where: {
+			uuid: user.companyUuid as string,
+		},
+	});
+	return res;
 }

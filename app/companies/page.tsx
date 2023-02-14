@@ -1,8 +1,31 @@
-import { CompanyInterface } from '@/types';
+// 'use client';
+
+import { CompanyInterface, ErrorInterface } from '@/types';
 import { getCompanies } from '../helpers/getCompanies';
+import { getSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth';
 
 export default async function Company() {
-	const data: CompanyInterface[] = await getCompanies();
+	const session = await getServerSession();
+
+	if (session === null || !('user' in session)) return <h1>Unauthorized</h1>;
+	const { user } = session;
+
+	const companyData: CompanyInterface[] | ErrorInterface = await getCompanies(
+		user?.email
+	);
+
+	if ('errorStatus' in companyData) {
+		return (
+			<>
+				<h1 className='text-3xl text-dark'>
+					<span className='text-red-800'>{companyData.errorStatus}</span>
+					{companyData.errorDescription}
+				</h1>
+				<p>{companyData.errorDescription}</p>
+			</>
+		);
+	}
 
 	return (
 		<div>
@@ -18,7 +41,7 @@ export default async function Company() {
 					</tr>
 				</thead>
 				<tbody>
-					{data.map((company) => (
+					{companyData.map((company) => (
 						<tr key={company.uuid}>
 							<td className='px-5'>{company.uuid}</td>
 							<td className='px-5'>{company.ruc}</td>

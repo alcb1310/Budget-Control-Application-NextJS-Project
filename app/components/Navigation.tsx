@@ -28,7 +28,7 @@ export default function Navigation(): JSX.Element {
 					</>
 				) : (
 					<>
-						<button className='text-green-600' onClick={() => signIn()}>
+						<button className='text-light' onClick={() => signIn()}>
 							Sign In
 						</button>
 					</>

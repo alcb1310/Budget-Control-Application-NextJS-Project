@@ -35,7 +35,7 @@ export const authOptions: NextAuthOptions = {
         strategy: "jwt"
     },
     pages: {
-        signIn: `${process.env.NEXTAUTH_URL}/login`
+        signIn: `/login`
     }
 };
 
